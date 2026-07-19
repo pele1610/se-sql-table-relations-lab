@@ -7,15 +7,31 @@ import pandas as pd
 # Connect to the database
 conn = sqlite3.connect('data.sqlite')
 
-pd.read_sql("""SELECT * FROM sqlite_master""", conn)
+
+pd.set_option('display.max_colwidth', None)
+pd.set_option('display.max_rows', None)
+schema = pd.read_sql("""SELECT * FROM sqlite_master""", conn)
+print(schema)
 
 # STEP 1
 # Replace None with your code
-df_boston = None
+df_boston = pd.read_sql("""
+SELECT employees.firstName, employees.lastName
+FROM employees
+JOIN offices ON employees.officeCode = offices.officeCode
+WHERE offices.city = "Boston"
+""", conn)
+print(df_boston)
 
 # STEP 2
 # Replace None with your code
-df_zero_emp = None
+df_zero_emp = df_zero_emp = pd.read_sql("""
+SELECT offices.officeCode
+FROM offices
+LEFT JOIN employees ON offices.officeCode = employees.officeCode
+WHERE employees.employeeNumber IS NULL
+""", conn)
+print(df_zero_emp)
 
 # STEP 3
 # Replace None with your code
