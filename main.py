@@ -35,11 +35,24 @@ print(df_zero_emp)
 
 # STEP 3
 # Replace None with your code
-df_employee = None
+df_employee = pd.read_sql("""
+SELECT employees.firstName, employees.lastName, offices.city, offices.state
+FROM employees
+LEFT JOIN offices ON employees.officeCode = offices.officeCode
+ORDER BY employees.firstName, employees.lastName
+""", conn)
+print(df_employee)
 
 # STEP 4
 # Replace None with your code
-df_contacts = None
+df_contacts = pd.read_sql("""
+SELECT customers.contactFirstName, customers.contactLastName, customers.phone, customers.salesRepEmployeeNumber
+FROM customers
+LEFT JOIN orders ON customers.customerNumber = orders.customerNumber
+WHERE orders.orderNumber IS NULL
+ORDER BY customers.contactLastName
+""", conn)
+print(df_contacts)
 
 # STEP 5
 # Replace None with your code
