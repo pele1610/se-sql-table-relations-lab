@@ -78,15 +78,15 @@ print(df_credit)
 
 # STEP 7
 # Replace None with your code
-df_credit = pd.read_sql("""
-SELECT employees.employeeNumber, employees.firstName, employees.lastName, COUNT(customers.customerNumber) AS num_customers
-FROM employees
-JOIN customers ON employees.employeeNumber = customers.salesRepEmployeeNumber
-GROUP BY employees.employeeNumber
-HAVING AVG(customers.creditLimit) > 90000
-ORDER BY num_customers DESC
+# STEP 7
+df_product_sold = pd.read_sql("""
+SELECT products.productName, COUNT(orderdetails.orderNumber) AS numorders, SUM(orderdetails.quantityOrdered) AS totalunits
+FROM products
+JOIN orderdetails ON products.productCode = orderdetails.productCode
+GROUP BY products.productCode
+ORDER BY totalunits DESC
 """, conn)
-print(df_credit)
+print(df_product_sold)
 
 # STEP 8
 # Replace None with your code
@@ -127,6 +127,7 @@ WHERE orderdetails.productCode IN (
     GROUP BY productCode
     HAVING COUNT(DISTINCT orders.customerNumber) < 20
 )
+ORDER BY employees.lastName
 """, conn)
 print(df_under_20)
 
