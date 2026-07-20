@@ -90,14 +90,44 @@ print(df_credit)
 
 # STEP 8
 # Replace None with your code
-df_total_customers = None
+df_total_customers = pd.read_sql("""
+SELECT products.productName, products.productCode, COUNT(DISTINCT orders.customerNumber) AS numpurchasers
+FROM products
+JOIN orderdetails ON products.productCode = orderdetails.productCode
+JOIN orders ON orderdetails.orderNumber = orders.orderNumber
+GROUP BY products.productCode
+ORDER BY numpurchasers DESC
+""", conn)
+print(df_total_customers)
 
 # STEP 9
 # Replace None with your code
-df_customers = None
+df_customers = pd.read_sql("""
+SELECT offices.officeCode, offices.city, COUNT(customers.customerNumber) AS n_customers
+FROM offices
+JOIN employees ON offices.officeCode = employees.officeCode
+JOIN customers ON employees.employeeNumber = customers.salesRepEmployeeNumber
+GROUP BY offices.officeCode
+""", conn)
+print(df_customers)
 
 # STEP 10
 # Replace None with your code
-df_under_20 = None
+df_under_20 = pd.read_sql("""
+SELECT DISTINCT employees.employeeNumber, employees.firstName, employees.lastName, offices.city, offices.officeCode
+FROM employees
+JOIN offices ON employees.officeCode = offices.officeCode
+JOIN customers ON employees.employeeNumber = customers.salesRepEmployeeNumber
+JOIN orders ON customers.customerNumber = orders.customerNumber
+JOIN orderdetails ON orders.orderNumber = orderdetails.orderNumber
+WHERE orderdetails.productCode IN (
+    SELECT productCode
+    FROM orderdetails
+    JOIN orders ON orderdetails.orderNumber = orders.orderNumber
+    GROUP BY productCode
+    HAVING COUNT(DISTINCT orders.customerNumber) < 20
+)
+""", conn)
+print(df_under_20)
 
 conn.close()
